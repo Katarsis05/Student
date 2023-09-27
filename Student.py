@@ -38,9 +38,12 @@ class Student:
         mid = 0
         for i in self.grades.values():
             value += i
-        mid = statistics.mean(value)     
-        return mid
-        
+        if len(value) != 0:
+            mid = statistics.mean(value)
+            return mid
+        else:
+            return ' нет оценок' 
+     
 class Mentor:
     def __init__(self, name, surname):
         self.name = name
@@ -68,8 +71,11 @@ class Lecturer(Mentor):
         mid = 0
         for i in self.grades.values():
             value += i
-        mid = statistics.mean(value)     
-        return mid
+        if len(value) != 0:
+            mid = statistics.mean(value)
+            return mid
+        else:
+            return ' нет оценок'     
   
     def __str__(self):
         score = self.average()
@@ -88,44 +94,97 @@ class Reviewer(Mentor):
     def __str__(self):
                 return f"Имя: {self.name}\nФамилия: {self.surname}"
 
+def average_all(self, course):
+    value = []
+    mid = 0
+    tupl1, tupl2 = '', ''
+    if isinstance(self[0], Student): 
+            tupl1 = 'студентов'
+            tupl2 = "Студенты" 
+    else:
+        tupl1 = "лекторов"
+        tupl2 = "Лекторы"
+
+    for i in self:
+        for k in i.grades.keys():
+            if k == course:
+                value += i.grades.get(k)
+    if len(value) != 0:
+        mid = statistics.mean(value)
+        return f'Средняя оценка {tupl1} на курсе {course}: {mid}'  
+        
+    else:
+        return f'{tupl2} на курсе {course} не обучаются'
 
 
 best_student = Student('Ruoy', 'Eman', 'your_gender')
 best_student.courses_in_progress += ['Python']
 best_student.courses_in_progress += ['Java']
+best_student.courses_in_progress += ['C++']
 best_student.finished_courses += ['C#']
 
 stella_student = Student("Стелла", "Савинкова", "Кошка")
 stella_student.courses_in_progress += ['C#']
+stella_student.courses_in_progress += ['C++']
  
 lector = Lecturer("Марина", "Савинкова")
 lector.courses_attached += ['Python']
 lector.courses_attached += ['Java']
+
 lector1 = Lecturer("Александра", "Манжос")
 lector1.courses_attached += ['Java']
 
 
 best_student.rate_hw(lector, 'Python', 10)
-#best_student.rate_hw(lector, 'Python', 5)
-#best_student.rate_hw(lector, 'Java', 7)
-best_student.rate_hw(lector1, 'Java', 7)
+best_student.rate_hw(lector, 'Java', 7)
 
 
 reviewer1 = Reviewer("Владислав", "Савинков")
 reviewer1.courses_attached += ['Python']
 reviewer1.courses_attached += ['C#']
 
+reviewer2 = Reviewer('Валентина', 'Парфенова')
+reviewer2.courses_attached += ['C++']
+
 reviewer1.rate_hw(best_student, 'Python', 10)
-reviewer1.rate_hw(best_student, 'Python', 10)
+reviewer1.rate_hw(best_student, 'Python', 5)
 reviewer1.rate_hw(stella_student, 'C#', 5)
 reviewer1.rate_hw(stella_student, 'C#', 10)
+reviewer2.rate_hw(stella_student, 'C++', 5)
 
 
 
-print(best_student)
-print()
-print(reviewer1)
-print()
-print(lector)
-print()
+#print(best_student)
+#print()
+#print(reviewer1)
+#print()
+#print(lector)
+#print()
 
+list_students = []
+
+
+for i in range(6):
+    list_students.append(Student(f'Студент_{i}', f'Фамилия_{i}', 'ж'))
+    list_students[i].courses_in_progress += ['Python']
+    list_students[i].courses_in_progress += ['C#']
+    reviewer1.rate_hw(list_students[i], 'Python', i+1)
+    reviewer1.rate_hw(list_students[i], 'C#', i-1)
+    print(f'{list_students[i]}\n')
+  
+print(average_all(list_students, 'Python'))
+print(average_all(list_students, "C#"))
+print(average_all(list_students, 'C++'))
+
+list_lecturers = []
+for i in range(6):
+    list_lecturers.append(Lecturer(f'Лектор_{i}', f'Фамилия_{i}'))
+    list_lecturers[i].courses_attached += ['Python']
+    list_lecturers[i].courses_attached += ['C++']
+    best_student.rate_hw(list_lecturers[i], 'Python', i+2)
+    best_student.rate_hw(list_lecturers[i], 'C++', i+1)
+    print(f'{list_lecturers[i]}\n')
+ 
+print(average_all(list_lecturers, 'Python'))
+print(average_all(list_lecturers, 'C#'))
+print(average_all(list_lecturers, 'C++'))
